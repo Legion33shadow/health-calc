@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Health Calculators — BMI, TDEE, Calorie Deficit</title>
+<meta name="description" content="BMI calculator, TDEE calculator, calorie deficit calculator. Real formulas. Free, instant.">
+<style>body{background:#0a0a0a;color:#e8e8f0;font-family:system-ui;margin:0;padding:40px}.c{max-width:700px;margin:0 auto}h1{font-size:24px}input,select{background:#12121c;border:1px solid #1e1e2e;color:#e8e8f0;padding:10px;border-radius:6px;width:48%;margin:5px 1%}button{background:#ef4444;color:white;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;margin:10px 0}#r{margin:20px 0}.box{background:#111;padding:15px;border-radius:8px;margin:8px 0}a{color:#ef4444}</style>
+</head><body><div class="c"><h1>Health Calculators</h1>
+<input id="w" type="number" placeholder="Weight (kg)"><input id="h" type="number" placeholder="Height (cm)">
+<input id="age" type="number" placeholder="Age"><select id="sex"><option value="m">Male</option><option value="f">Female</option></select>
+<select id="act"><option value="1.2">Sedentary</option><option value="1.375">Light exercise</option><option value="1.55">Moderate</option><option value="1.725">Active</option><option value="1.9">Very active</option></select>
+<button onclick="calc()">Calculate All</button><div id="r"></div>
+<script>
+function calc(){const w=+document.getElementById('w').value,h=+document.getElementById('h').value/100,age=+document.getElementById('age').value,sex=document.getElementById('sex').value,act=+document.getElementById('act').value;
+if(!w||!h||!age)return;
+const bmi=w/(h*h),cat=bmi<18.5?'Underweight':bmi<25?'Normal':bmi<30?'Overweight':'Obese';
+const bmr=sex==='m'?10*w+6.25*(h*100)-5*age+5:10*w+6.25*(h*100)-5*age-161;
+const tdee=Math.round(bmr*act),deficit=Math.round(tdee*0.8);
+let html=`<div class="box"><h3>BMI: ${bmi.toFixed(1)} — ${cat}</h3><p>Healthy range: 18.5-24.9</p></div>`;
+html+=`<div class="box"><h3>BMR: ${Math.round(bmr)} kcal/day</h3><p>Mifflin-St Jeor formula</p></div>`;
+html+=`<div class="box"><h3>TDEE: ${tdee} kcal/day</h3><p>Total Daily Energy Expenditure</p></div>`;
+html+=`<div class="box"><h3>For weight loss: ${deficit} kcal/day</h3><p>20% deficit = ~0.5kg/week</p></div>`;
+document.getElementById('r').innerHTML=html}
+</script>
+<p style="margin-top:30px;color:#6b6b88;font-size:12px">Mifflin-St Jeor formula. Not medical advice. <a href="https://legion-api.com">LEGION</a></p>
+</div></body></html>
