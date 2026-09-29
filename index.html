@@ -1,23 +1,58 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Free Health Calculators — BMI, TDEE, Calorie Deficit</title>
-<meta name="description" content="BMI calculator, TDEE calculator, calorie deficit calculator. Real formulas. Free, instant.">
-<style>body{background:#0a0a0a;color:#e8e8f0;font-family:system-ui;margin:0;padding:40px}.c{max-width:700px;margin:0 auto}h1{font-size:24px}input,select{background:#12121c;border:1px solid #1e1e2e;color:#e8e8f0;padding:10px;border-radius:6px;width:48%;margin:5px 1%}button{background:#ef4444;color:white;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;margin:10px 0}#r{margin:20px 0}.box{background:#111;padding:15px;border-radius:8px;margin:8px 0}a{color:#ef4444}</style>
-</head><body><div class="c"><h1>Health Calculators</h1>
-<input id="w" type="number" placeholder="Weight (kg)"><input id="h" type="number" placeholder="Height (cm)">
-<input id="age" type="number" placeholder="Age"><select id="sex"><option value="m">Male</option><option value="f">Female</option></select>
-<select id="act"><option value="1.2">Sedentary</option><option value="1.375">Light exercise</option><option value="1.55">Moderate</option><option value="1.725">Active</option><option value="1.9">Very active</option></select>
-<button onclick="calc()">Calculate All</button><div id="r"></div>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Health Calculators — BMI, Biological Age, Cardiovascular Risk, Calories</title>
+<meta name="description" content="5 free health calculators: BMI, biological age estimator, cardiovascular risk score, calorie needs and macros. Instant results. No signup.">
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,sans-serif;background:#0a0a0a;color:#f0f0f0;min-height:100vh}.hero{text-align:center;padding:56px 20px 36px;background:linear-gradient(180deg,#1a0a0a,#0a0a0a)}.hero h1{font-size:clamp(24px,4vw,42px);font-weight:700;color:#ef4444;margin-bottom:10px}.hero p{color:#555;font-size:15px}.tabs{display:flex;gap:0;max-width:700px;margin:0 auto;overflow-x:auto;padding:0 20px}.tab{font-size:13px;padding:10px 16px;border:1px solid #222;background:#111;color:#666;cursor:pointer;white-space:nowrap;transition:all .15s;border-right:none}.tab:last-child{border-right:1px solid #222}.tab.on{background:#ef4444;color:#fff;border-color:#ef4444}.wrap{max-width:560px;margin:20px auto;padding:0 20px 60px}.cb{display:none}.cb.on{display:block}.panel{background:#111;border:1px solid #1e1e1e;border-radius:14px;padding:24px}.lbl{font-size:12px;color:#888;margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.04em}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,select{width:100%;background:#0a0a0a;border:1px solid #222;border-radius:8px;color:#f0f0f0;font-size:14px;padding:10px 12px;margin-bottom:12px;outline:none}input:focus,select:focus{border-color:#ef4444}.btn{width:100%;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;cursor:pointer}.res{margin-top:18px;background:#0a0a0a;border:1px solid #1e1e1e;border-radius:10px;padding:18px;display:none;text-align:center}.rv{font-size:40px;font-weight:700;color:#ef4444;margin-bottom:6px}.rc{font-size:13px;color:#888;margin-bottom:10px}.rt{font-size:13px;color:#aaa;line-height:1.7;text-align:left;white-space:pre-line}.ft{text-align:center;padding:24px;color:#333;font-size:12px}.ft a{color:#ef4444;text-decoration:none}</style>
+</head><body>
+<div class="hero"><h1>&#x2764;&#xFE0F; Health Calculators</h1><p>BMI &middot; Biological Age &middot; Cardiovascular Risk &middot; Calories &middot; Macros</p></div>
+<div class="tabs">
+<div class="tab on" onclick="show('bmi',this)">&#x2696;&#xFE0F; BMI</div>
+<div class="tab" onclick="show('age',this)">&#x1F9EC; Bio Age</div>
+<div class="tab" onclick="show('cardio',this)">&#x2764;&#xFE0F; Cardio</div>
+<div class="tab" onclick="show('cal',this)">&#x1F525; Calories</div>
+<div class="tab" onclick="show('macro',this)">&#x1F957; Macros</div>
+</div>
+<div class="wrap">
+<div class="cb on" id="bmi"><div class="panel">
+<div class="row"><div><label class="lbl">Weight (kg)</label><input id="bw" type="number" placeholder="70"></div><div><label class="lbl">Height (cm)</label><input id="bh" type="number" placeholder="175"></div></div>
+<div class="row"><div><label class="lbl">Age</label><input id="ba" type="number" placeholder="30"></div><div><label class="lbl">Sex</label><select id="bs"><option value="m">Male</option><option value="f">Female</option></select></div></div>
+<button class="btn" onclick="calcBMI()">Calculate BMI &rarr;</button>
+<div class="res" id="bmi-r"><div class="rv" id="bmi-v">-</div><div class="rc" id="bmi-c">-</div><div class="rt" id="bmi-t"></div></div>
+</div></div>
+<div class="cb" id="age"><div class="panel">
+<div class="row"><div><label class="lbl">Your Age</label><input id="ca" type="number" placeholder="35"></div><div><label class="lbl">Resting HR (bpm)</label><input id="rhr" type="number" placeholder="65"></div></div>
+<div class="row"><div><label class="lbl">Exercise (days/week)</label><input id="ex" type="number" placeholder="3" min="0" max="7"></div><div><label class="lbl">Sleep (hours/night)</label><input id="sl" type="number" placeholder="7"></div></div>
+<div class="row"><div><label class="lbl">Smoker?</label><select id="sm"><option value="0">No</option><option value="1">Former</option><option value="2">Yes</option></select></div><div><label class="lbl">BMI (approx)</label><input id="abmi" type="number" placeholder="23" step="0.1"></div></div>
+<button class="btn" onclick="calcAge()">Estimate Biological Age &rarr;</button>
+<div class="res" id="age-r"><div class="rv" id="age-v">-</div><div class="rc">Estimated Biological Age</div><div class="rt" id="age-t"></div></div>
+</div></div>
+<div class="cb" id="cardio"><div class="panel">
+<div class="row"><div><label class="lbl">Age</label><input id="ca2" type="number" placeholder="45"></div><div><label class="lbl">Sex</label><select id="cs"><option value="m">Male</option><option value="f">Female</option></select></div></div>
+<div class="row"><div><label class="lbl">Systolic BP (mmHg)</label><input id="sbp" type="number" placeholder="120"></div><div><label class="lbl">Total Cholesterol</label><input id="chol" type="number" placeholder="200"></div></div>
+<div class="row"><div><label class="lbl">Smoker?</label><select id="cs2"><option value="0">No</option><option value="1">Yes</option></select></div><div><label class="lbl">Diabetic?</label><select id="cd"><option value="0">No</option><option value="1">Yes</option></select></div></div>
+<button class="btn" onclick="calcCardio()">Estimate Risk &rarr;</button>
+<div class="res" id="cardio-r"><div class="rv" id="cardio-v">-</div><div class="rc" id="cardio-c">10-year cardiovascular risk estimate</div><div class="rt" id="cardio-t"></div></div>
+</div></div>
+<div class="cb" id="cal"><div class="panel">
+<div class="row"><div><label class="lbl">Weight (kg)</label><input id="cw" type="number" placeholder="75"></div><div><label class="lbl">Height (cm)</label><input id="ch" type="number" placeholder="175"></div></div>
+<div class="row"><div><label class="lbl">Age</label><input id="cage" type="number" placeholder="30"></div><div><label class="lbl">Sex</label><select id="csex"><option value="m">Male</option><option value="f">Female</option></select></div></div>
+<label class="lbl">Activity Level</label>
+<select id="act" style="margin-bottom:12px"><option value="1.2">Sedentary (desk job, no exercise)</option><option value="1.375">Lightly active (1-3x/week)</option><option value="1.55">Moderately active (3-5x/week)</option><option value="1.725">Very active (6-7x/week)</option><option value="1.9">Extremely active (2x/day)</option></select>
+<button class="btn" onclick="calcCal()">Calculate Calories &rarr;</button>
+<div class="res" id="cal-r"><div class="rv" id="cal-v">-</div><div class="rc">Daily calories to maintain weight (TDEE)</div><div class="rt" id="cal-t"></div></div>
+</div></div>
+<div class="cb" id="macro"><div class="panel">
+<div class="row"><div><label class="lbl">Daily calories</label><input id="mc" type="number" placeholder="2200"></div><div><label class="lbl">Goal</label><select id="mg"><option value="0.3,0.4,0.3">Balanced</option><option value="0.4,0.3,0.3">High protein (muscle gain)</option><option value="0.1,0.3,0.6">Keto / Very low carb</option><option value="0.15,0.6,0.25">Endurance / High carb</option></select></div></div>
+<button class="btn" onclick="calcMacro()">Calculate Macros &rarr;</button>
+<div class="res" id="macro-r"><div class="rv" id="macro-v">-</div><div class="rc">Daily macro targets</div><div class="rt" id="macro-t"></div></div>
+</div></div>
+</div>
+<div class="ft">Powered by <a href="https://legion-api.com">LEGION Systems</a> &middot; <a href="https://gemmo.gumroad.com/l/ngtmw">AI API &euro;29/mo</a><br><small style="color:#1a1a1a;margin-top:4px;display:block">Not medical advice. Consult your doctor for health decisions.</small></div>
 <script>
-function calc(){const w=+document.getElementById('w').value,h=+document.getElementById('h').value/100,age=+document.getElementById('age').value,sex=document.getElementById('sex').value,act=+document.getElementById('act').value;
-if(!w||!h||!age)return;
-const bmi=w/(h*h),cat=bmi<18.5?'Underweight':bmi<25?'Normal':bmi<30?'Overweight':'Obese';
-const bmr=sex==='m'?10*w+6.25*(h*100)-5*age+5:10*w+6.25*(h*100)-5*age-161;
-const tdee=Math.round(bmr*act),deficit=Math.round(tdee*0.8);
-let html=`<div class="box"><h3>BMI: ${bmi.toFixed(1)} — ${cat}</h3><p>Healthy range: 18.5-24.9</p></div>`;
-html+=`<div class="box"><h3>BMR: ${Math.round(bmr)} kcal/day</h3><p>Mifflin-St Jeor formula</p></div>`;
-html+=`<div class="box"><h3>TDEE: ${tdee} kcal/day</h3><p>Total Daily Energy Expenditure</p></div>`;
-html+=`<div class="box"><h3>For weight loss: ${deficit} kcal/day</h3><p>20% deficit = ~0.5kg/week</p></div>`;
-document.getElementById('r').innerHTML=html}
-</script>
-<p style="margin-top:30px;color:#6b6b88;font-size:12px">Mifflin-St Jeor formula. Not medical advice. <a href="https://legion-api.com">LEGION</a></p>
-</div></body></html>
+function show(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');document.querySelectorAll('.cb').forEach(c=>c.classList.remove('on'));document.getElementById(id).classList.add('on');}
+function calcBMI(){const w=+document.getElementById('bw').value,h=+document.getElementById('bh').value/100;if(!w||!h)return;const bmi=w/(h*h);let cat;if(bmi<18.5)cat='Underweight';else if(bmi<25)cat='Normal weight';else if(bmi<30)cat='Overweight';else cat='Obese';document.getElementById('bmi-v').textContent=bmi.toFixed(1);document.getElementById('bmi-c').textContent=cat;document.getElementById('bmi-t').textContent=cat==='Normal weight'?'Your BMI is in the healthy range (18.5-24.9).\nMaintain a balanced diet and regular exercise.':'Consider discussing your weight with a healthcare provider.\nBMI is one indicator - body composition matters too.';document.getElementById('bmi-r').style.display='block';}
+function calcAge(){const age=+document.getElementById('ca').value||35,rhr=+document.getElementById('rhr').value||70,ex=+document.getElementById('ex').value||2,sl=+document.getElementById('sl').value||7,sm=+document.getElementById('sm').value||0,bmi=+document.getElementById('abmi').value||25;let d=0;if(rhr>80)d+=3;else if(rhr<60)d-=3;else if(rhr<70)d-=1;if(ex>=5)d-=4;else if(ex>=3)d-=2;else if(ex<=1)d+=3;if(sl>=7&&sl<=9)d-=1;else if(sl<6||sl>10)d+=2;if(sm==2)d+=6;else if(sm==1)d+=2;if(bmi>=30||bmi<18.5)d+=3;else if(bmi<25&&bmi>=18.5)d-=1;const bio=Math.max(18,Math.round(age+d)),diff=bio-age;document.getElementById('age-v').textContent=bio;document.getElementById('age-t').textContent=diff>2?'Your biological age is '+Math.abs(diff)+' years older than your chronological age.\nPriority areas: sleep quality, cardiovascular exercise, stress management.':diff<-2?'Your biological age is '+Math.abs(diff)+' years younger.\nYour lifestyle habits appear to be working well.':'Your biological age closely matches your chronological age.\nMaintain your current habits.';document.getElementById('age-r').style.display='block';}
+function calcCardio(){const age=+document.getElementById('ca2').value||45,sex=document.getElementById('cs').value,sbp=+document.getElementById('sbp').value||120,chol=+document.getElementById('chol').value||200,smoke=+document.getElementById('cs2').value||0,diab=+document.getElementById('cd').value||0;let score=0;score+=(age-40)*0.5;if(sex==='m')score+=2;if(sbp>140)score+=3;else if(sbp>130)score+=1;if(chol>240)score+=3;else if(chol>200)score+=1;if(smoke)score+=4;if(diab)score+=3;const risk=Math.min(40,Math.max(1,Math.round(score)));let cat;if(risk<5)cat='Low risk';else if(risk<10)cat='Moderate risk';else if(risk<20)cat='High risk';else cat='Very high risk';document.getElementById('cardio-v').textContent=risk+'%';document.getElementById('cardio-c').textContent=cat+' (10-year estimate)';document.getElementById('cardio-t').textContent=risk>=10?'Consider consulting a cardiologist or GP.\nLifestyle changes (diet, exercise, no smoking) can significantly reduce risk.':'Maintain heart-healthy habits: regular exercise, balanced diet, no smoking.';document.getElementById('cardio-r').style.display='block';}
+function calcCal(){const w=+document.getElementById('cw').value||75,h=+document.getElementById('ch').value||175,age=+document.getElementById('cage').value||30,sex=document.getElementById('csex').value,act=+document.getElementById('act').value||1.55;const bmr=sex==='m'?10*w+6.25*h-5*age+5:10*w+6.25*h-5*age-161;const tdee=Math.round(bmr*act);document.getElementById('cal-v').textContent=tdee.toLocaleString();document.getElementById('cal-t').textContent='Maintenance: '+tdee+' kcal/day\nWeight loss (-0.5kg/week): '+(tdee-500)+' kcal/day\nWeight gain (+0.5kg/week): '+(tdee+300)+' kcal/day\nBMR (at rest): '+Math.round(bmr)+' kcal/day';document.getElementById('cal-r').style.display='block';}
+function calcMacro(){const cal=+document.getElementById('mc').value||2200;const [p,c,f]=document.getElementById('mg').value.split(',').map(Number);const prot=Math.round(cal*p/4),carb=Math.round(cal*c/4),fat=Math.round(cal*f/9);document.getElementById('macro-v').textContent=cal.toLocaleString();document.getElementById('macro-t').textContent='Protein: '+prot+'g  ('+Math.round(cal*p)+' kcal, '+Math.round(p*100)+'%)\nCarbohydrates: '+carb+'g  ('+Math.round(cal*c)+' kcal, '+Math.round(c*100)+'%)\nFat: '+fat+'g  ('+Math.round(cal*f)+' kcal, '+Math.round(f*100)+'%)';document.getElementById('macro-r').style.display='block';}
+</script></body></html>
