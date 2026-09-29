@@ -1,0 +1,14 @@
+{
+  "slug": "health-calc",
+  "type": "calculator_or_tool",
+  "country": "GLOBAL",
+  "category": "health",
+  "official_sources": [
+    "https://www.who.int/",
+    "https://www.cdc.gov/",
+    "https://www.nhs.uk/"
+  ],
+  "claim_state": "method_unverified",
+  "phoenix_ready": false,
+  "limitations": "Health calculators are informational only and not medical diagnosis."
+}

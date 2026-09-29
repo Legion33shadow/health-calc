@@ -1,0 +1,12 @@
+{
+  "tool": "health-calc",
+  "country": "GLOBAL",
+  "category": "health",
+  "official_sources": [
+    "https://www.who.int/",
+    "https://www.cdc.gov/",
+    "https://www.nhs.uk/"
+  ],
+  "last_reviewed": "2026-09-29",
+  "source_status": "official_sources_listed_not_formula_verified"
+}
